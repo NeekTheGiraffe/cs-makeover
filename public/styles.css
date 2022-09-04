@@ -21,6 +21,55 @@ pre, input {
     border: 1.5px solid #494d5f;
 }
 
+/* Copy code buttons */
+pre { position: relative; }
+.copy-btn-holder {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+
+    padding: 0.8rem;
+    box-sizing: border-box;
+
+    pointer-events: none;
+}
+.copy-btn {
+    position: sticky;
+    float: right;
+    top: 0.8rem;
+    z-index: 1;
+
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1.5px solid #494d5f;
+
+    font-size: 1.2rem;
+    font-family: 'Poppins';
+    
+    opacity: 0;
+    transition-duration: 0.1s;
+    pointer-events: all;
+}
+pre:hover .copy-btn { opacity: 1; }
+.btn, .copy-btn {
+    animation-duration: 0.25s;
+}
+.btn:active, .copy-btn:active {
+    animation-name: press;
+}
+
+/* Button colors */
+@media (prefers-color-scheme: light) {
+    .copy-btn { background-color: #eeeeee; color: #1d1f26; }
+    .copy-btn:hover { background-color: #b593f5; color: #1d1f26; }
+}
+@media (prefers-color-scheme: dark) {
+    .copy-btn { background-color: #1d1f26; color: #eeeeee; }
+    .copy-btn:hover { background-color: #543c85; color: #eeeeee; }
+}
+
 /* Background colors */
 @media (prefers-color-scheme: light) {
     body { background-color: #eeeeee; color: #1d1f26; }
@@ -38,11 +87,6 @@ pre samp, pre code, pre tt {
     padding: 0rem;
     background-color: transparent;
 }
-
-/* Code inside links */
-/* a samp, a code, a tt {
-    background-color: transparent;
-} */
 
 /* Tables */
 table {
@@ -104,4 +148,17 @@ th, td {
     font-family: 'Roboto Mono';
     src: url('fonts/RobotoMono-Italic-VariableFont_wght.ttf');
     font-style: italic;
+}
+
+/* Animation */
+@keyframes press {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
 }

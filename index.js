@@ -73,6 +73,19 @@ app.get('/:path([a-z\\.]+)*', (req, res) => {
                     $(el).prop('href', `${linkPath}${href}`);
             });
 
+            // Add scripts for copy button logic
+            $('body')
+                .append('<script src="https://code.jquery.com/jquery-3.6.1.min.js">')
+                .append('<script src="/copy-code.js">');
+            // For every code block, add a 'Copy' button
+            $('pre').each((i, el) => {
+                $(el)
+                    .wrapInner(`<div class="code-block" id="blk-${i}"></div>`)
+                    .prepend(`<div class="copy-btn-holder">\
+                        <button class="copy-btn" id="btn-${i}">Copy</button>\
+                    </div>`);
+            });
+
             // Ship the edited HTML
             res.send($.html());
         });

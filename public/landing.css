@@ -52,7 +52,6 @@ input { font-size: 0.9rem; }
 .text-input { width: 50vw; }
 .btn {
     transition-duration: 0.25s;
-    animation-duration: 0.25s;
 }
 .btn:active {
     animation-name: press;
@@ -64,16 +63,3 @@ input { font-size: 0.9rem; }
     margin-top: 0px;
     margin-bottom: 0px;
 }
-
-/* Animation */
-@keyframes press {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(0.9);
-    }
-    100% {
-        transform: scale(1);
-    }
-  }
