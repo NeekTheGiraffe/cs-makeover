@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import express from 'express';
 import { load } from 'cheerio';
 
+import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -28,19 +29,30 @@ app.get('/:path([a-z\\.]+)*', (req, res) => {
     /* foo/bar/cs111/index.html   */
     const fullPath = `${req.params.path}${req.params[0]}`;
 
-    /* TODO: Check if the current page has a file extension
+    /* Check if the current page has a file extension
      * (This will be useful if the course website serves non-HTML file types,
      * which we would not want to edit) */
-    //const fileExtensionMatch = fullPath.match(/\.[A-Za-z]+$/);
-    //const fileExtension = fileExtensionMatch ? fileExtensionMatch[0].substring(1) : null;
-    //const isHTML = fileExtension == null || fileExtension == 'html';
+    const fileExtensionMatch = fullPath.match(/\.[A-Za-z]+$/);
+    const fileExtension = fileExtensionMatch ? fileExtensionMatch[0].substring(1) : null;
+    const isHTML = fileExtension == null || fileExtension == 'html';
     
     const pathWithoutFile = fullPath.match(/^([\w-]+\/)*([\w-]+$)?/)[0];
     const linkPath = pathWithoutFile.charAt(pathWithoutFile.length - 1) == '/' ?
         `/${pathWithoutFile}` : `/${pathWithoutFile}/`;
-    //console.log({ linkPath, fileExtension, fullPath });
+    //console.log({ linkPath, fileExtension, fullPath, isHTML });
     
-    // Grab the webpage
+    // For non-HTML files, just pipe them to the response without changes
+    if (!isHTML)
+    {
+        const externalReq = http.request({
+            hostname: "web.cs.ucla.edu",
+            path: `/${fullPath}`
+        }, externalRes => externalRes.pipe(res));
+        externalReq.end();
+        return;
+    }
+
+    // HTML pages - Grab the webpage
     fetch(`http://web.cs.ucla.edu/${fullPath}`)
         .then(response => response.text())
         .then(html => {
