@@ -73,12 +73,12 @@ pre:hover .copy-btn { opacity: 1; }
 /* Background colors */
 @media (prefers-color-scheme: light) {
     body { background-color: #eeeeee; color: #1d1f26; }
-    samp, code, tt { background-color: #bfbfbf; }
+    samp, code, tt { background-color: #d0d0d0; }
     pre { background-color: #dedede; }
 }
 @media (prefers-color-scheme: dark) {
     body { background-color: #1d1f26; color: #eeeeee; }
-    samp, code, tt { background-color: #494d5f; }
+    samp, code, tt { background-color: #393c4a; }
     pre { background-color: #272933; }
 }
 
