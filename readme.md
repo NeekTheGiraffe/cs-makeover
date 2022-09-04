@@ -12,6 +12,7 @@ The project is currently hosted [here](https://cs-makeover.fly.dev), using [fly.
 1. Render a beautified version of any past, present, or future UCLA CS web page
 hosted on [web.cs.ucla.edu](http://web.cs.ucla.edu/).
 2. Supports light or dark mode, depending on your system configuration.
+3. Copy any code blocks to your clipboard at the click of a button
 
 ## Future directions
 
