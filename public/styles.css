@@ -40,9 +40,9 @@ pre samp, pre code, pre tt {
 }
 
 /* Code inside links */
-a samp, a code, a tt {
+/* a samp, a code, a tt {
     background-color: transparent;
-}
+} */
 
 /* Tables */
 table {
