@@ -47,6 +47,8 @@
     .btn { background-color: #543c85; color: #eeeeee; }
     .btn:hover { background-color: #aa8ae6; color: #1d1f26; }
 }
+
+input { font-size: 0.9rem; }
 .text-input { width: 50vw; }
 .btn {
     transition-duration: 0.25s;

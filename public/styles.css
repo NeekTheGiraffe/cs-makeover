@@ -44,6 +44,17 @@ a samp, a code, a tt {
     background-color: transparent;
 }
 
+/* Tables */
+table {
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+
+th, td {
+    border: 2px solid #494d5f;
+    padding: 4px;
+}
+
 /* Hyperlink colors */
 @media (prefers-color-scheme: light) {
     a { color: #aa8ae6; }
