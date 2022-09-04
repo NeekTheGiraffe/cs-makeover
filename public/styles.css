@@ -1,0 +1,95 @@
+/* Plain text elements */
+body, input {
+    font-family: 'Poppins';
+}
+
+/* Code/monospace elements */
+samp, code, tt, pre {
+    font-family: 'Roboto Mono';
+}
+
+/* Bounding box around inline code */
+samp, code, tt {
+    border-radius: 0.3rem;
+    padding: 0.1rem;
+}
+
+/* Code blocks or input fields */
+pre, input {
+    border-radius: 0.5rem;
+    padding: 0.8rem;
+    border: 1.5px solid #494d5f;
+}
+
+/* Background colors */
+@media (prefers-color-scheme: light) {
+    body { background-color: #eeeeee; color: #1d1f26; }
+    samp, code, tt { background-color: #bfbfbf; }
+    pre { background-color: #dedede; }
+}
+@media (prefers-color-scheme: dark) {
+    body { background-color: #1d1f26; color: #eeeeee; }
+    samp, code, tt { background-color: #494d5f; }
+    pre { background-color: #272933; }
+}
+
+/* Code already inside a code block */
+pre samp, pre code, pre tt {
+    padding: 0rem;
+    background-color: transparent;
+}
+
+/* Code inside links */
+a samp, a code, a tt {
+    background-color: transparent;
+}
+
+/* Hyperlink colors */
+@media (prefers-color-scheme: light) {
+    a { color: #aa8ae6; }
+    a:visited { color: #543c85; }
+    a:hover { color: #52a3cc; }
+    a:active { color: #a0d2eb; }
+}
+@media (prefers-color-scheme: dark) {
+    a { color: #b593f5; }
+    a:visited { color: #8458b3; }
+    a:hover { color: #a0d2eb; }
+    a:active { color: #e6f7ff; }
+}
+
+/* Font faces */
+@font-face {
+    font-family: 'Poppins';
+    src: url('fonts/Poppins-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('fonts/Poppins-Bold.ttf');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('fonts/Poppins-Italic.ttf');
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('fonts/Poppins-BoldItalic.ttf');
+    font-style: italic;
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Roboto Mono';
+    src: url('fonts/RobotoMono-VariableFont_wght.ttf');
+}
+
+@font-face {
+    font-family: 'Roboto Mono';
+    src: url('fonts/RobotoMono-Italic-VariableFont_wght.ttf');
+    font-style: italic;
+}
