@@ -67,7 +67,7 @@ app.get('/:path([a-z\\.]+)*', (req, res) => {
             // For every link, if it is relative, edit it so it links properly
             $('a').each((i, el) => {
                 const href = $(el).attr('href');
-                const isRelativeLink = href != null && href.match(/^#|(mailto)|(https?)/) == null;
+                const isRelativeLink = href != null && href.match(/^\/|#|(mailto)|(https?)/) == null;
                 //console.log({ href: $(el).attr('href'), isRelativeLink });
                 if (isRelativeLink)
                     $(el).prop('href', `${linkPath}${href}`);
