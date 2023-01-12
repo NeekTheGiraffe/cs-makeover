@@ -63,19 +63,9 @@ app.get('/:path([~a-z\\.]+)*', (req, res) => {
             $('head')
                 .append('<link rel="icon" type="image/png" href="/sparkles.png">')
                 .append('<link rel="stylesheet" href="/styles.css">');
-            
-            // For every link, if it is relative, edit it so it links properly
-            $('a').each((i, el) => {
-                const href = $(el).attr('href');
-                const isRelativeLink = href != null && href.match(/^\/|#|(mailto)|(https?)/) == null;
-                console.log({
-                    href: $(el).attr('href'),
-                    isRelativeLink,
-                    finalResolution: isRelativeLink ? `${linkPath}${href}` : href
-                });
-                if (isRelativeLink)
-                    $(el).prop('href', `${linkPath}${href}`);
-            });
+
+            fixRelativeLinks($, linkPath, 'a',   'href');
+            fixRelativeLinks($, linkPath, 'img', 'src');
 
             // Add scripts for copy button logic
             $('body')
@@ -98,3 +88,13 @@ app.get('/:path([~a-z\\.]+)*', (req, res) => {
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
 });
+
+function fixRelativeLinks($, linkPath, elementName, attrName) {
+    $(elementName).each((i, el) => {
+        const linkAttribute = $(el).attr(attrName);
+        const isRelativeLink = linkAttribute != null && linkAttribute.match(/^\/|#|(mailto)|(https?)/) == null;
+        //console.log({ linkAttribute, isRelativeLink, finalResolution: isRelativeLink ? `${linkPath}${linkAttribute}` : linkAttribute });
+        if (isRelativeLink)
+            $(el).prop(attrName, `${linkPath}${linkAttribute}`);
+    });
+}
