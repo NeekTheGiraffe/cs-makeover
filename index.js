@@ -34,7 +34,7 @@ app.get('/:path([~a-z\\.]+)*', (req, res) => {
      * which we would not want to edit) */
     const fileExtensionMatch = fullPath.match(/\.[A-Za-z]+$/);
     const fileExtension = fileExtensionMatch ? fileExtensionMatch[0].substring(1) : null;
-    const isHTML = fileExtension == null || fileExtension === 'html';
+    const isHTML = fileExtension == null || fileExtension === 'html' || fileExtension === 'htm';
     
     const pathWithoutFile = fullPath.match(/^([\w~-]+\/)*([\w~-]+$)?/)[0];
     const linkPath = pathWithoutFile.charAt(pathWithoutFile.length - 1) == '/' ?
