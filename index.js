@@ -23,7 +23,7 @@ app.get('/go', (req, res) => {
 });
 
 // Handle CS website path
-app.get('/:path([a-z\\.]+)*', (req, res) => {
+app.get('/:path([~a-z\\.]+)*', (req, res) => {
     /* Get the full path. Looks something like:
     /* foo/bar/cs111
     /* foo/bar/cs111/index.html   */
@@ -34,9 +34,9 @@ app.get('/:path([a-z\\.]+)*', (req, res) => {
      * which we would not want to edit) */
     const fileExtensionMatch = fullPath.match(/\.[A-Za-z]+$/);
     const fileExtension = fileExtensionMatch ? fileExtensionMatch[0].substring(1) : null;
-    const isHTML = fileExtension == null || fileExtension == 'html';
+    const isHTML = fileExtension == null || fileExtension === 'html';
     
-    const pathWithoutFile = fullPath.match(/^([\w-]+\/)*([\w-]+$)?/)[0];
+    const pathWithoutFile = fullPath.match(/^([\w~-]+\/)*([\w~-]+$)?/)[0];
     const linkPath = pathWithoutFile.charAt(pathWithoutFile.length - 1) == '/' ?
         `/${pathWithoutFile}` : `/${pathWithoutFile}/`;
     //console.log({ linkPath, fileExtension, fullPath, isHTML });
@@ -68,7 +68,11 @@ app.get('/:path([a-z\\.]+)*', (req, res) => {
             $('a').each((i, el) => {
                 const href = $(el).attr('href');
                 const isRelativeLink = href != null && href.match(/^\/|#|(mailto)|(https?)/) == null;
-                //console.log({ href: $(el).attr('href'), isRelativeLink });
+                console.log({
+                    href: $(el).attr('href'),
+                    isRelativeLink,
+                    finalResolution: isRelativeLink ? `${linkPath}${href}` : href
+                });
                 if (isRelativeLink)
                     $(el).prop('href', `${linkPath}${href}`);
             });
