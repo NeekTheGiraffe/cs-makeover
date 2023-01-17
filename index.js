@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import express from 'express';
 import { load } from 'cheerio';
+import qs from 'qs';
 
 import http from 'http';
 import path from 'path';
@@ -35,12 +36,22 @@ app.get('/:path([~a-z\\.]+)*', (req, res) => {
     const fileExtensionMatch = fullPath.match(/\.[A-Za-z]+$/);
     const fileExtension = fileExtensionMatch ? fileExtensionMatch[0].substring(1) : null;
     const isHTML = fileExtension == null || fileExtension === 'html' || fileExtension === 'htm';
-    
+    const isCGI = fileExtension != null && fileExtension === 'cgi';
+
     const pathWithoutFile = fullPath.match(/^([\w~-]+\/)*([\w~-]+$)?/)[0];
     const linkPath = pathWithoutFile.charAt(pathWithoutFile.length - 1) == '/' ?
         `/${pathWithoutFile}` : `/${pathWithoutFile}/`;
-    //console.log({ linkPath, fileExtension, fullPath, isHTML });
+    //console.log({ fullPath, linkPath, fileExtension, isHTML, isCGI });
     
+    // For CGI forms, show a page linking to the original page
+    if (isCGI) {
+        const queryString = qs.stringify(req.query);
+        const href = `https://web.cs.ucla.edu/${fullPath}?${queryString}`;
+
+        res.render(path.join(__dirname, '/forms.ejs'), { href });
+        return;
+    }
+
     // For non-HTML files, just pipe them to the response without changes
     if (!isHTML)
     {
@@ -53,7 +64,8 @@ app.get('/:path([~a-z\\.]+)*', (req, res) => {
     }
 
     // HTML pages - Grab the webpage
-    fetch(`http://web.cs.ucla.edu/${fullPath}`)
+    const originalPageUrl = `http://web.cs.ucla.edu/${fullPath}`;
+    fetch(originalPageUrl)
         .then(response => response.text())
         .then(html => {
             // Load the HTML
@@ -78,6 +90,12 @@ app.get('/:path([~a-z\\.]+)*', (req, res) => {
                     .prepend(`<div class="copy-btn-holder">\
                         <button class="copy-btn" id="btn-${i}">Copy</button>\
                     </div>`);
+            });
+
+            $('form').each((i, el) => {
+                $(el).replaceWith(
+                    `<h3>Go back to the <a href=${originalPageUrl} target='_blank'>original page</a> to submit this form.</h3>\
+                    <p>Remember, never submit anything for class on a 3rd-party website like this.</p>`);
             });
 
             // Ship the edited HTML
