@@ -64,7 +64,7 @@ app.get('/:path([~a-z\\.]+)*', (req, res) => {
     }
 
     // HTML pages - Grab the webpage
-    const originalPageUrl = `http://web.cs.ucla.edu/${fullPath}`;
+    const originalPageUrl = `https://web.cs.ucla.edu/${fullPath}`;
     fetch(originalPageUrl)
         .then(response => response.text())
         .then(html => {
