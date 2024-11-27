@@ -2,6 +2,7 @@
     "watch": [
         "*.*",
         "public/*.*",
-        "templates/*.*"
+        "templates/*.*",
+        "src/*"
     ]
 }

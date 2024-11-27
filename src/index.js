@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const rootDir = path.join(__dirname, "..")
 
 const hostname = 'web.cs.ucla.edu';
 
@@ -45,11 +46,11 @@ app.get('/', (req, res) => {
                 const [subroute, classNumber] = match;
                 classesThisTerm.push({ subroute: `/classes/${term}${abbreviatedYear}/${subroute}`, classNumber });
             });
-            res.render(path.join(__dirname, 'templates', 'index.ejs'), { classes: classesThisTerm, defaultSubroute });
+            res.render(path.join(rootDir, 'templates', 'index.ejs'), { classes: classesThisTerm, defaultSubroute });
         });
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(rootDir, 'public')));
 
 // Handle Go button from homepage
 // Simply redirects the page to the path that the user entered in the form
@@ -58,33 +59,23 @@ app.get('/go', (req, res) => {
 });
 
 // Handle CS website path
-app.get('/:path([~a-z\\.]+)*', (req, res) => {
+app.get('*', (req, res) => {
     /* Get the full path. Looks something like:
     /* foo/bar/cs111
     /* foo/bar/cs111/index.html   */
-    const fullPath = `${req.params.path}${req.params[0]}`;
+    const fullPath = req.params[0];
+    const queryString = qs.stringify(req.query);
 
     /* Check if the current page has a file extension
      * (This will be useful if the course website serves non-HTML file types,
      * which we would not want to edit) */
     const fileExtensionMatch = fullPath.match(/\.[A-Za-z]+$/);
     const fileExtension = fileExtensionMatch ? fileExtensionMatch[0].substring(1) : null;
-    const isHTML = fileExtension == null || fileExtension === 'html' || fileExtension === 'htm';
-    const isCGI = fileExtension != null && fileExtension === 'cgi';
+    const isHTML = fileExtension == null || fileExtension === 'html' || fileExtension === 'htm' || fileExtension === 'cgi';
 
-    const pathWithoutFile = fullPath.match(/^([\w~-]+\/)*([\w~-]+$)?/)[0];
+    const pathWithoutFile = fullPath.match(/^\/([\w~-]+\/)*([\w~-]+$)?/)[0];
     const linkPath = pathWithoutFile.charAt(pathWithoutFile.length - 1) == '/' ?
-        `/${pathWithoutFile}` : `/${pathWithoutFile}/`;
-    //console.log({ fullPath, linkPath, fileExtension, isHTML, isCGI });
-    
-    // For CGI forms, show a page linking to the original page
-    if (isCGI) {
-        const queryString = qs.stringify(req.query);
-        const href = `https://web.cs.ucla.edu/${fullPath}?${queryString}`;
-
-        res.render(path.join(__dirname, 'templates', 'forms.ejs'), { href });
-        return;
-    }
+        pathWithoutFile : `${pathWithoutFile}/`;
 
     // For non-HTML files, just pipe them to the response without changes
     if (!isHTML)
@@ -98,7 +89,7 @@ app.get('/:path([~a-z\\.]+)*', (req, res) => {
     }
 
     // HTML pages - Grab the webpage
-    const originalPageUrl = `https://web.cs.ucla.edu/${fullPath}`;
+    const originalPageUrl = queryString === '' ? `https://web.cs.ucla.edu${fullPath}` : `https://web.cs.ucla.edu${fullPath}?${queryString}`;
     fetch(originalPageUrl)
         .then(response => response.text())
         .then(html => {
@@ -143,10 +134,9 @@ app.listen(port, () => {
 
 function fixRelativeLinks($, linkPath, elementName, attrName) {
     $(elementName).each((i, el) => {
-        const linkAttribute = $(el).attr(attrName);
-        const isRelativeLink = linkAttribute != null && linkAttribute.match(/^\/|#|(mailto)|(https?)/) == null;
-        //console.log({ linkAttribute, isRelativeLink, finalResolution: isRelativeLink ? `${linkPath}${linkAttribute}` : linkAttribute });
+        const attributeValue = $(el).attr(attrName);
+        const isRelativeLink = attributeValue != null && attributeValue.match(/^\/|#|(mailto)|(https?)/) == null;
         if (isRelativeLink)
-            $(el).prop(attrName, `${linkPath}${linkAttribute}`);
+            $(el).prop(attrName, `${linkPath}${attributeValue}`);
     });
 }
