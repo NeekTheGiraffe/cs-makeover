@@ -6,6 +6,7 @@ import qs from 'qs';
 import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dedent from 'dedent';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -103,6 +104,7 @@ app.get('*', (req, res) => {
             // For every code block, add a 'Copy' button
             $('pre').each((i, el) => {
                 $(el)
+                    .text((i, txt) => dedent(txt))
                     .wrapInner(`<div class="code-block" id="blk-${i}"></div>`)
                     .prepend(`<div class="copy-btn-holder">\
                         <button class="copy-btn" id="btn-${i}">Copy</button>\
