@@ -45,7 +45,7 @@ app.get('/', (req, res) => {
                 const [subroute, classNumber] = match;
                 classesThisTerm.push({ subroute: `/classes/${term}${abbreviatedYear}/${subroute}`, classNumber });
             });
-            res.render(path.join(__dirname, 'index.ejs'), { classes: classesThisTerm, defaultSubroute });
+            res.render(path.join(__dirname, 'templates', 'index.ejs'), { classes: classesThisTerm, defaultSubroute });
         });
 });
 
@@ -82,7 +82,7 @@ app.get('/:path([~a-z\\.]+)*', (req, res) => {
         const queryString = qs.stringify(req.query);
         const href = `https://web.cs.ucla.edu/${fullPath}?${queryString}`;
 
-        res.render(path.join(__dirname, '/forms.ejs'), { href });
+        res.render(path.join(__dirname, 'templates', 'forms.ejs'), { href });
         return;
     }
 

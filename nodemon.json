@@ -1,6 +1,7 @@
 {
     "watch": [
         "*.*",
-        "public/*.*"
+        "public/*.*",
+        "templates/*.*"
     ]
 }
