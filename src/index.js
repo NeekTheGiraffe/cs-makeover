@@ -52,7 +52,7 @@ app.get('/go', (req, res) => {
 });
 
 // Handle CS website path
-app.get('*', (req, res) => {
+app.get('*', async (req, res) => {
     /* Get the full path. Looks something like:
     /* foo/bar/cs111
     /* foo/bar/cs111/index.html   */
@@ -83,43 +83,41 @@ app.get('*', (req, res) => {
 
     // HTML pages - Grab the webpage
     const originalPageUrl = queryString === '' ? `https://web.cs.ucla.edu${fullPath}` : `https://web.cs.ucla.edu${fullPath}?${queryString}`;
-    fetch(originalPageUrl)
-        .then(response => response.text())
-        .then(html => {
-            // Load the HTML
-            const $ = load(html);
+    const response = await fetch(originalPageUrl);
+    const html = await response.text();
+    // Load the HTML
+    const $ = load(html);
 
-            // Add favicon and custom CSS
-            $('head')
-                .append('<link rel="icon" type="image/png" href="/sparkles.png">')
-                .append('<link rel="stylesheet" href="/styles.css">');
+    // Add favicon and custom CSS
+    $('head')
+        .append('<link rel="icon" type="image/png" href="/sparkles.png">')
+        .append('<link rel="stylesheet" href="/styles.css">');
 
-            fixRelativeLinks($, linkPath, 'a',   'href');
-            fixRelativeLinks($, linkPath, 'img', 'src');
+    fixRelativeLinks($, linkPath, 'a',   'href');
+    fixRelativeLinks($, linkPath, 'img', 'src');
 
-            // Add scripts for copy button logic
-            $('body')
-                .append('<script src="https://code.jquery.com/jquery-3.6.1.min.js">')
-                .append('<script src="/copy-code.js">');
-            // For every code block, add a 'Copy' button
-            $('pre').each((i, el) => {
-                $(el)
-                    .text((i, txt) => dedent(txt))
-                    .wrapInner(`<div class="code-block" id="blk-${i}"></div>`)
-                    .prepend(`<div class="copy-btn-holder">\
-                        <button class="copy-btn" id="btn-${i}">Copy</button>\
-                    </div>`);
-            });
+    // Add scripts for copy button logic
+    $('body')
+        .append('<script src="https://code.jquery.com/jquery-3.6.1.min.js">')
+        .append('<script src="/copy-code.js">');
+    // For every code block, add a 'Copy' button
+    $('pre').each((i, el) => {
+        $(el)
+            .text((i, txt) => dedent(txt))
+            .wrapInner(`<div class="code-block" id="blk-${i}"></div>`)
+            .prepend(`<div class="copy-btn-holder">\
+                <button class="copy-btn" id="btn-${i}">Copy</button>\
+            </div>`);
+    });
 
-            $('form').each((i, el) => {
-                $(el).replaceWith(
-                    `<h3>Go back to the <a href=${originalPageUrl} target='_blank'>original page</a> to submit this form.</h3>\
-                    <p>Remember, never submit anything for class on a 3rd-party website like this.</p>`);
-            });
+    $('form').each((i, el) => {
+        $(el).replaceWith(
+            `<h3>Go back to the <a href=${originalPageUrl} target='_blank'>original page</a> to submit this form.</h3>\
+            <p>Remember, never submit anything for class on a 3rd-party website like this.</p>`);
+    });
 
-            // Ship the edited HTML
-            res.send($.html());
-        });
+    // Ship the edited HTML
+    res.send($.html());
 });
 
 app.listen(port, () => {
