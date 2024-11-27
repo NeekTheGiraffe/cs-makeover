@@ -9,45 +9,37 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const rootDir = path.join(__dirname, "..")
+const rootDir = path.join(__dirname, "..");
 
 const hostname = 'web.cs.ucla.edu';
+
+const classesCache = {};
+const classesCacheTtlMs = 24 * 60 * 60 * 1000;
 
 // Setup express server
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     const now = new Date();
     const abbreviatedYear = now.getFullYear() - 2000;
-    const month = now.getMonth();
-    let term;
-    if (month <= 4) {
-        term = 'winter';
-    } else if (month <= 8) {
-        term = 'spring';
-    } else {
-        term = 'fall';
-    }
-    const defaultSubroute = `/classes/${term}${abbreviatedYear}`;
-    const classesTableUrl = `https://${hostname}/classes/${term}${abbreviatedYear}`;
-    const classesThisTerm = [];
-    fetch(classesTableUrl)
-        .then(response => response.text())
-        .then(html => {
-            const $ = load(html);
+    const term = `${getSeason(now)}${abbreviatedYear}`;
+    const defaultSubroute = `/classes/${term}`;
 
-            $('td a').each((i, el) => {
-                const csClassRegex = /^cs([0-9]+[A-Z]?)\/$/;
-                const match = $(el).text().match(csClassRegex);
-                if (match == null) {
-                    return;
-                }
-                const [subroute, classNumber] = match;
-                classesThisTerm.push({ subroute: `/classes/${term}${abbreviatedYear}/${subroute}`, classNumber });
-            });
-            res.render(path.join(rootDir, 'templates', 'index.ejs'), { classes: classesThisTerm, defaultSubroute });
-        });
+    if (classesCache[term] == null || now - classesCache[term].lastUpdated > classesCacheTtlMs) {
+        try {
+            classesCache[term] = {
+                classes: await getClasses(term),
+                lastUpdated: now,
+            }
+            console.log(`Successfully retrieved classes for ${term} and updated cache`);
+        } catch (e) {
+            console.error(`Failed to retrieve classes for ${term}`);
+        }
+    }
+    const classes = classesCache[term]?.classes ?? [];
+
+    res.render(path.join(rootDir, 'templates', 'index.ejs'), { classes, defaultSubroute });
 });
 
 app.use(express.static(path.join(rootDir, 'public')));
@@ -139,4 +131,34 @@ function fixRelativeLinks($, linkPath, elementName, attrName) {
         if (isRelativeLink)
             $(el).prop(attrName, `${linkPath}${attributeValue}`);
     });
+}
+
+function getSeason(date) {
+    const month = date.getMonth();
+    if (month <= 4) {
+        return 'winter';
+    } else if (month <= 8) {
+        return 'spring';
+    } else {
+        return 'fall';
+    }
+}
+
+async function getClasses(term) {
+    const classesTableUrl = `https://${hostname}/classes/${term}`;
+    const response = await fetch(classesTableUrl);
+    const html = await response.text();
+    const $ = load(html);
+
+    const classesThisTerm = [];
+    $('td a').each((i, el) => {
+        const csClassRegex = /^cs([0-9]+[A-Z]?)\/$/;
+        const match = $(el).text().match(csClassRegex);
+        if (match == null) {
+            return;
+        }
+        const [subroute, classNumber] = match;
+        classesThisTerm.push({ subroute: `/classes/${term}/${subroute}`, classNumber });
+    });
+    return classesThisTerm;
 }
