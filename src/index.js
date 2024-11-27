@@ -59,6 +59,7 @@ app.get('*', async (req, res) => {
     const fullPath = req.params[0];
     const queryString = qs.stringify(req.query);
 
+    // TODO: Ignore the file extension here and use the Content-Type of the original response.
     /* Check if the current page has a file extension
      * (This will be useful if the course website serves non-HTML file types,
      * which we would not want to edit) */

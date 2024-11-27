@@ -16,7 +16,12 @@ hosted on [web.cs.ucla.edu](http://web.cs.ucla.edu/).
 
 ## Future directions
 
-* Add breadcrumbs at the top of each page
+- Add breadcrumbs at the top of each page
+- Dropdown for previous terms
+- Clean up the code
+  - Don't depend on the file extension of the URL
+  - TypeScript
+  - Duplication of domain names etc.
 
 ## Run the app locally
 
