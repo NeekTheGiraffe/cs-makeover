@@ -16,10 +16,7 @@ hosted on [web.cs.ucla.edu](http://web.cs.ucla.edu/).
 
 ## Future directions
 
-* Tab navigation accessibility for copy code buttons
 * Add breadcrumbs at the top of each page
-* In the landing page, add a script that saves the user's last-entered
-subdirectory into local storage
 
 ## Run the app locally
 

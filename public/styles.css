@@ -52,7 +52,7 @@ pre { position: relative; }
     transition-duration: 0.1s;
     pointer-events: all;
 }
-pre:hover .copy-btn { opacity: 1; }
+pre:hover .copy-btn, .copy-btn:focus { opacity: 1; }
 .btn, .copy-btn {
     animation-duration: 0.25s;
 }
