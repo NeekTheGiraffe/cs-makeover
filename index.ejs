@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS Makeover</title>
+
+    <link rel="icon" type="image/png" href="/sparkles.png">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/landing.css">
+</head>
+<body class="center content">
+
+    <h1>UCLA Computer Science Makeover</h1>
+
+    <h3>Choose a UCLA Computer Science class:</h3>
+    <div id="classes">
+        <% classes.forEach(function({ subroute, classNumber }) { %>
+            <a class="class-link" href=<%= subroute %>>CS <%= classNumber %></a>
+        <% }); %>
+    </div>
+
+    <h3>or, enter a subroute of <code>web.cs.ucla.edu</code>:</h3>
+    <form action="/go" method="GET" class="input-group">
+        <input type="text" name="path" value=<%= defaultSubroute %> placeholder=<%= defaultSubroute %> class="text-input">
+        <input type="submit" value="Go" class="btn">
+    </form>
+    <p>
+        CS Makeover is a proxy server for a prettier UCLA Computer Science
+        experience. It fetches from UCLA's course webpages (from professors who
+        post on <code>web.cs.ucla.edu</code>) and renders them with friendlier
+        CSS and copy buttons for code blocks.
+    </p>
+
+    <div class="footer">Made by Nick Pavlosky · <a href="https://github.com/NeekTheGiraffe/cs-makeover">Source code</a></div>
+</body>
+</html>

@@ -18,6 +18,28 @@
     justify-self: flex-end;
 }
 
+#classes {
+    display: flex;
+    flex-direction: row;
+}
+
+.class-link {
+    padding: 0.8rem;
+    border: 1px solid gray;
+    border-radius: 0.5rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    background-color: var(--accent-bg-color);
+    color: var(--accent-color) !important;
+    text-decoration: none;
+    transition-duration: 0.25s;
+}
+
+.class-link:hover, .class-link:focus {
+    background-color: var(--accent-active-bg-color);
+    color: var(--accent-active-color) !important;
+}
+
 /* Landing page form */
 .input-group {
     display: flex;
@@ -38,23 +60,44 @@
 }
 
 @media (prefers-color-scheme: light) {
-    .text-input { background-color: #dedede; color: #1d1f26; }
-    .btn { background-color: #b593f5; color: #1d1f26; }
-    .btn:hover { background-color: #8458b3; color: #eeeeee; }
+    body {
+        --input-bg-color: #dedede;
+        --input-color: #1d1f26;
+        --accent-bg-color: #b593f5;
+        --accent-color: #1d1f26;
+        --accent-active-bg-color: #8458b3;
+        --accent-active-color: #eeeeee;
+    }
 }
 @media (prefers-color-scheme: dark) {
-    .text-input { background-color: #272933; color: #eeeeee; }
-    .btn { background-color: #543c85; color: #eeeeee; }
-    .btn:hover { background-color: #aa8ae6; color: #1d1f26; }
+    body {
+        --input-bg-color: #272933;
+        --input-color: #eeeeee;
+        --accent-bg-color: #543c85;
+        --accent-color: #eeeeee;
+        --accent-active-bg-color: #aa8ae6;
+        --accent-active-color: #eeeeee;
+    }
 }
 
 input { font-size: 0.9rem; }
-.text-input { width: 50vw; }
+.text-input {
+    width: 50vw;
+    background-color: var(--input-bg-color);
+    color: var(--input-color);
+}
 .btn {
     transition-duration: 0.25s;
+    background-color: var(--accent-bg-color);
+    color: var(--accent-color);
+    cursor: pointer;
 }
 .btn:active {
     animation-name: press;
+}
+.btn:focus, .btn:hover {
+    background-color: var(--accent-active-bg-color);
+    color: var(--accent-active-color);
 }
 
 /* Utility classes */

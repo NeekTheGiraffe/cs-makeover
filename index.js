@@ -10,17 +10,51 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const hostname = 'web.cs.ucla.edu';
+
 // Setup express server
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+    const now = new Date();
+    const abbreviatedYear = now.getFullYear() - 2000;
+    const month = now.getMonth();
+    let term;
+    if (month <= 4) {
+        term = 'winter';
+    } else if (month <= 8) {
+        term = 'spring';
+    } else {
+        term = 'fall';
+    }
+    const defaultSubroute = `/classes/${term}${abbreviatedYear}`;
+    const classesTableUrl = `https://${hostname}/classes/${term}${abbreviatedYear}`;
+    const classesThisTerm = [];
+    fetch(classesTableUrl)
+        .then(response => response.text())
+        .then(html => {
+            const $ = load(html);
+
+            $('td a').each((i, el) => {
+                const csClassRegex = /^cs([0-9]+[A-Z]?)\/$/;
+                const match = $(el).text().match(csClassRegex);
+                if (match == null) {
+                    return;
+                }
+                const [subroute, classNumber] = match;
+                classesThisTerm.push({ subroute: `/classes/${term}${abbreviatedYear}/${subroute}`, classNumber });
+            });
+            res.render(path.join(__dirname, 'index.ejs'), { classes: classesThisTerm, defaultSubroute });
+        });
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Handle Go button from homepage
 // Simply redirects the page to the path that the user entered in the form
 app.get('/go', (req, res) => {
-    //console.log(req.query.path);
-    res.redirect(req.query.path);
+    res.redirect(req.query.path || '/');
 });
 
 // Handle CS website path
